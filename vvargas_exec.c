@@ -32,9 +32,18 @@ int execBackground(char **args)
 
 int executeCmd(char **args)
 {
+     /*we first have to check if the command wants to be executed in the background*/
+     if(execBackground(args) == 1){
+          //execute in background
+          return 0;
+     }
+     //else we execute normally
     /*We will execute the command given, with the arguments given*/
     /*We have to take the first token since that is the command, and the rest of the tokens (if any) 
     pass them as arguments*/
+
+
+
      pid_t  pid;
      int    status;
 

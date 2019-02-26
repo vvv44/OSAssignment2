@@ -60,8 +60,7 @@ int executeCmd(char **args)
      }
      else { 
           if(!bkg)                       /* for the parent:      */
-               while (wait(&status) != pid)       /* wait for completion  */
-                    ;
+              waitpid(pid,NULL,0);
           bkg = 0;
      }
     return 0;

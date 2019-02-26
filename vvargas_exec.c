@@ -32,20 +32,21 @@ int execBackground(char **args)
 
 int executeCmd(char **args)
 {
-     /*we first have to check if the command wants to be executed in the background*/
-     if(execBackground(args) == 1){
-          //execute in background
-          return 0;
-     }
-     //else we execute normally
     /*We will execute the command given, with the arguments given*/
     /*We have to take the first token since that is the command, and the rest of the tokens (if any) 
     pass them as arguments*/
 
 
-
+     int bkg;
      pid_t  pid;
      int    status;
+     
+     /*we first have to check if the command wants to be executed in the background*/
+     if(execBackground(args) == 1){
+          //execute in background
+          bkg = 1;
+     }
+     //else we execute normally
 
      if ((pid = fork()) < 0) {     /* fork a child process           */
           printf("*** ERROR: forking child process failed\n");
@@ -57,9 +58,11 @@ int executeCmd(char **args)
                exit(1);
           }
      }
-     else {                                  /* for the parent:      */
-          while (wait(&status) != pid)       /* wait for completion  */
-               ;
+     else { 
+          if(!bkg)                       /* for the parent:      */
+               while (wait(&status) != pid)       /* wait for completion  */
+                    ;
+          bkg = 0;
      }
     return 0;
 }

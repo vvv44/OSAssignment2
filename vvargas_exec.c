@@ -76,16 +76,7 @@ int executeCmd(char **args)
     /*We have to take the first token since that is the command, and the rest of the tokens (if any) 
     pass them as arguments*/
 
-
-     int bkg; //will say if command wants to run program on background
-     pid_t  pid;
-     int    status;
-     /*we first have to check if the command wants to be executed in the background*/
-     if(execBackground(args) == 1){
-          //execute in background
-          bkg = 1;
-     }
-     /*We also check if command's output has to be directed to a file*/
+      /*We  check if command's output has to be directed to a file*/
      if(writeToFile(args) == 1){
           int fd;
           if((fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC | O_CREAT, 
@@ -96,6 +87,17 @@ int executeCmd(char **args)
           dup2(fd, 1);
           close(fd);
      }
+
+     int bkg; //will say if command wants to run program on background
+     pid_t  pid;
+     int    status;
+
+     /*we have to check if the command wants to be executed in the background*/
+     if(execBackground(args) == 1){
+          //execute in background
+          bkg = 1;
+     }
+    
 
      //else we execute normally
 

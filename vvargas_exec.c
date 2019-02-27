@@ -111,8 +111,6 @@ int executeCmd(char **args)
      //Direct output
      dup2(fd, 1);
      close(fd);
-
-
      if ((pid = fork()) < 0) {     /* fork a child process           */
           printf("*** ERROR: forking child process failed\n");
           exit(1);
@@ -122,10 +120,10 @@ int executeCmd(char **args)
                printf("*** ERROR: exec failed\n");
                exit(1);
           }
-          //restore original output
-          dup2(defOut,1);
-          close(defOut);
      }
+     //restore original output
+     dup2(defOut,1);
+     close(defOut);
      if(!bkg){                     /* for the parent:      */
           waitpid(pid,NULL,0); //seems to work as background only for first command
           //further children creation does not keep the shell working

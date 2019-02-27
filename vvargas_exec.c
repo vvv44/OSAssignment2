@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 /*Function to duplicate a string*/
-char* str_duplicate(char* string){
+char* strDuplicate(char* string){
   short i = 0;
   while(string[i] != '\0'){
     i++;
@@ -39,7 +39,7 @@ int writeToFile(char **args){
      }
      if(args[i-2][0] == '>'){//technically i-1 points to the filename, filename must be one word, and nothing should be after it
           /*We have to eliminate the '>' while keeping the filename saved somewhere.*/
-          filename = str_duplicate(args[i-1]); //make a copy of the potential filename
+          filename = strDuplicate(args[i-1]); //make a copy of the potential filename
           free(args[i-1]);//remove filename and > symbol
           free(args[i-2]);
           args[i-2] = NULL; //set last element to null
@@ -76,6 +76,9 @@ int executeCmd(char **args)
     /*We have to take the first token since that is the command, and the rest of the tokens (if any) 
     pass them as arguments*/
 
+     //We save default output
+     int defOut = dup(1);
+
       /*We  check if command's output has to be directed to a file*/
      if(writeToFile(args) == 1){
           int fd;
@@ -110,6 +113,9 @@ int executeCmd(char **args)
                printf("*** ERROR: exec failed\n");
                exit(1);
           }
+          //restore original output
+          dup2(defOut,1);
+          close(defOut);
      }
      else { 
           if(!bkg)                       /* for the parent:      */

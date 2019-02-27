@@ -76,21 +76,6 @@ int executeCmd(char **args)
     /*We have to take the first token since that is the command, and the rest of the tokens (if any) 
     pass them as arguments*/
 
-     //We save default output
-     int defOut = dup(1);
-
-      /*We  check if command's output has to be directed to a file*/
-     if(writeToFile(args) == 1){
-          int fd;
-          if((fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC | O_CREAT, 
-          S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1){ 
-               perror (filename);
-               exit( EXIT_FAILURE);
-          }
-          dup2(fd, 1);
-          close(fd);
-     }
-
      int bkg; //will say if command wants to run program on background
      pid_t  pid;
      int    status;
@@ -100,9 +85,26 @@ int executeCmd(char **args)
           //execute in background
           bkg = 1;
      }
-    
 
-     //else we execute normally
+     //We save default output
+     int defOut = dup(1);
+     //new output
+     int fd;
+      /*We  check if command's output has to be directed to a file*/
+     if(writeToFile(args) == 1){
+          if((fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC | O_CREAT, 
+          S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1){ 
+               perror (filename);
+               exit( EXIT_FAILURE);
+          }
+     }else{
+          //default output
+          fd = dup(defOut);
+     }
+     //Direct output
+     dup2(fd, 1);
+     close(fd);
+
 
      if ((pid = fork()) < 0) {     /* fork a child process           */
           printf("*** ERROR: forking child process failed\n");

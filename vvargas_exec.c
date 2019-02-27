@@ -32,6 +32,9 @@ char* filename;
 //This function will determine if output of a program has to be written to a file
 //will return 1 if so, and 0 if not.
 int writeToFile(char **args){
+     //we first check if there's less than three tokens
+     if(args[1] == NULL && args[2] == NULL)/*If left is false, it won't evaluate right and wont cause seg fault*/
+          return 0;
      int i;
      i = 0;
      while(args[i] != 0){ //reach the end of tokens
@@ -72,6 +75,10 @@ int execBackground(char **args)
 
 int executeCmd(char **args)
 {
+     //Check if not null
+     if(args[0] == NULL)
+          return-1;
+
     /*We will execute the command given, with the arguments given*/
     /*We have to take the first token since that is the command, and the rest of the tokens (if any) 
     pass them as arguments*/

@@ -117,12 +117,10 @@ int executeCmd(char **args)
           dup2(defOut,1);
           close(defOut);
      }
-     else { 
-          if(!bkg)                       /* for the parent:      */
-              waitpid(pid,NULL,0); //seems to work as background only for first command
-              //further children creation does not keep the shell working
+     if(!bkg){                     /* for the parent:      */
+          waitpid(pid,NULL,0); //seems to work as background only for first command
+          //further children creation does not keep the shell working
           bkg = 0;
      }
     return 0;
 }
-//FIXME: add output writing to file

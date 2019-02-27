@@ -9,6 +9,46 @@
 #include <unistd.h>
 #include <stdio.h>
 
+/*Function to duplicate a string*/
+char* str_duplicate(char* string){
+  short i = 0;
+  while(string[i] != '\0'){
+    i++;
+  }
+  i++;
+  char* copy = (char*) malloc(i*sizeof(char));
+  i =0;
+  while(*string){
+    copy[i] = *string;
+    i++;
+    string++;
+  }
+  return copy;
+}
+
+/*We will make a variable to hold filename, which will be modified by writeToFile*/
+char* filename;
+
+//This function will determine if output of a program has to be written to a file
+//will return 1 if so, and 0 if not.
+int writeToFile(char **args){
+     int i;
+     i = 0;
+     while(args[i] != 0){ //reach the end of tokens
+          i++;
+     }
+     if(args[i-2][0] == '>'){//technically i-1 points to the filename, filename must be one word, and nothing should be after it
+          /*We have to eliminate the '>' while keeping the filename saved somewhere.*/
+          filename = str_duplicate(args[i-1]); //make a copy of the potential filename
+          free(args[i-1]);//remove filename and > symbol
+          free(args[i-2]);
+          args[i-2] = NULL; //set last element to null
+          return 1;
+     }else{
+          return 0;
+     }
+}
+
 int execBackground(char **args)
 {
     int i;
@@ -37,15 +77,26 @@ int executeCmd(char **args)
     pass them as arguments*/
 
 
-     int bkg;
+     int bkg; //will say if command wants to run program on background
      pid_t  pid;
      int    status;
-     
      /*we first have to check if the command wants to be executed in the background*/
      if(execBackground(args) == 1){
           //execute in background
           bkg = 1;
      }
+     /*We also check if command's output has to be directed to a file*/
+     if(writeToFile(args) == 1){
+          int fd;
+          if((fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC | O_CREAT, 
+          S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1){ 
+               perror (filename);
+               exit( EXIT_FAILURE);
+          }
+          dup2(fd, 1);
+          close(fd);
+     }
+
      //else we execute normally
 
      if ((pid = fork()) < 0) {     /* fork a child process           */

@@ -87,12 +87,6 @@ int executeCmd(char **args)
      pid_t  pid;
      int    status;
 
-     /*we have to check if the command wants to be executed in the background*/
-     if(execBackground(args) == 1){
-          //execute in background
-          bkg = 1;
-     }
-
      //We save default output
      int defOut = dup(1);
      //new output
@@ -108,6 +102,13 @@ int executeCmd(char **args)
           //default output
           fd = dup(defOut);
      }
+     
+      /*we have to check if the command wants to be executed in the background*/
+     if(execBackground(args) == 1){
+          //execute in background
+          bkg = 1;
+     }
+
      //Direct output
      dup2(fd, 1);
      close(fd);

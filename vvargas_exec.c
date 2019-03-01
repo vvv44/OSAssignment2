@@ -126,7 +126,7 @@ int executeCmd(char **args)
      dup2(defOut,1);
      close(defOut);
      if(!bkg){                     /* for the parent:      */
-          waitpid(pid,NULL); //seems to work as background only for first command
+          waitpid(pid,&status,0); //seems to work as background only for first command
           //further children creation does not keep the shell working
           bkg = 0;
      }

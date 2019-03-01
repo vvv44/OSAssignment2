@@ -83,7 +83,7 @@ int executeCmd(char **args)
     /*We have to take the first token since that is the command, and the rest of the tokens (if any) 
     pass them as arguments*/
 
-     int bkg; //will say if command wants to run program on background
+     int bkg = 0; //will say if command wants to run program on background
      pid_t  pid;
      int    status;
 

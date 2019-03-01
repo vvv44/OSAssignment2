@@ -114,19 +114,19 @@ int executeCmd(char **args)
      pid = fork();
      if (pid < 0) {     /* fork a child process           */
           printf("*** ERROR: forking child process failed\n");
-          exit(1);
+          exit(0);
      }
      else if (pid == 0) {          /* for the child process:         */
           if (execvp(*args, args) < 0) {     /* execute the command  */
                printf("*** ERROR: exec failed\n");
-               exit(1);
+               exit(0);
           }
      }
      //restore original output
      dup2(defOut,1);
      close(defOut);
      if(!bkg){                     /* for the parent:      */
-          waitpid(pid,&status,0); //seems to work as background only for first command
+          waitpid(pid,NULL); //seems to work as background only for first command
           //further children creation does not keep the shell working
           bkg = 0;
      }
